@@ -1,0 +1,10 @@
+PROJECT 24 - TÓM TẮT KẾT QUẢ HỌC MÁY
+Nguồn dữ liệu: D:\Học Máy Cơ Bản\project_24_hoc_may\data\raw\household_power_consumption.txt
+Dữ liệu demo: False
+Tiền xử lý được chọn: absolute
+K được chọn: 2
+Silhouette validation: 0.2625
+Độ ổn định ARI: 1.0000
+Silhouette test: 0.1825
+Khoảng cách trung bình trên test: 3.6114
+Silhouette baseline ngày thường/cuối tuần: 0.1031

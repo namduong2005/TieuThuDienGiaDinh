@@ -1,0 +1,23 @@
+{
+  "data_source": "D:\\H\u1ecdc M\u00e1y C\u01a1 B\u1ea3n\\project_24_hoc_may\\data\\raw\\household_power_consumption.txt",
+  "is_demo_data": false,
+  "selected_mode": "absolute",
+  "selected_k": 2,
+  "selection_validation_silhouette": 0.2625042553083504,
+  "selection_stability_ari": 1.0,
+  "test_silhouette": 0.182507100217186,
+  "test_mean_distance_to_centroid": 3.6113989115790703,
+  "baseline_weekday_weekend_test_silhouette": 0.10313582056343033,
+  "baseline_global_mean_test_distance": 3.715607299496473,
+  "split": {
+    "train_days": 852,
+    "validation_days": 284,
+    "test_days": 284,
+    "train_end": "2009-04-19",
+    "validation_end": "2010-02-04",
+    "test_start": "2010-02-05",
+    "test_end": "2010-11-26"
+  },
+  "test_used_for_model_selection": false,
+  "model_path": "D:\\H\u1ecdc M\u00e1y C\u01a1 B\u1ea3n\\project_24_hoc_may\\models\\kmeans_pipeline.joblib"
+}

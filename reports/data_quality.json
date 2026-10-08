@@ -1,0 +1,10 @@
+{
+  "source_file": "D:\\H\u1ecdc M\u00e1y C\u01a1 B\u1ea3n\\project_24_hoc_may\\data\\raw\\household_power_consumption.txt",
+  "total_raw_rows": 2075259,
+  "missing_power_rows": 25979,
+  "invalid_datetime_rows": 0,
+  "total_calendar_days": 1442,
+  "kept_days": 1420,
+  "removed_days": 22,
+  "max_missing_hours_allowed": 2
+}
