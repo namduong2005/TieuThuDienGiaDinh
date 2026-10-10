@@ -1,0 +1,44 @@
+{
+  "data_source": "synthetic_demo",
+  "eda_scope": "train_only",
+  "number_of_days": 144,
+  "start_date": "2009-01-01",
+  "end_date": "2009-05-24",
+  "duplicate_date_rows": 0,
+  "missing_hour_cells_before_imputation": 75,
+  "days_with_missing_hours": 53,
+  "daily_mean_kw": {
+    "count": 144.0,
+    "mean": 0.8926661551423487,
+    "std": 0.11761842792850137,
+    "min": 0.7506578073884261,
+    "25%": 0.8050424460104761,
+    "50%": 0.8563390284802169,
+    "75%": 0.9209901420077922,
+    "max": 1.216538317888707
+  },
+  "daily_peak_kw": {
+    "count": 144.0,
+    "mean": 1.9151639438498331,
+    "std": 0.23316693287073587,
+    "min": 1.4033760452099189,
+    "25%": 1.7201203541382029,
+    "50%": 1.940901703388371,
+    "75%": 2.108353645667044,
+    "max": 2.363111670564888
+  },
+  "daily_mean_iqr_lower_kw": 0.6311209020145021,
+  "daily_mean_iqr_upper_kw": 1.0949116860037662,
+  "daily_mean_iqr_outlier_days_train": 11,
+  "anomaly_days": 11,
+  "anomaly_rate": 0.04583333333333333,
+  "cluster_counts": {
+    "0": 194,
+    "1": 46
+  },
+  "season_counts": {
+    "spring": 85,
+    "winter": 59
+  },
+  "sub_metering_available": true
+}

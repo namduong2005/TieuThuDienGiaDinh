@@ -1,5 +1,5 @@
 {
-  "data_source": "D:\\H\u1ecdc M\u00e1y C\u01a1 B\u1ea3n\\project_24_hoc_may\\data\\raw\\household_power_consumption.txt",
+  "data_source": "data\\raw\\household_power_consumption.txt",
   "is_demo_data": false,
   "selected_mode": "absolute",
   "selected_k": 2,
@@ -19,5 +19,6 @@
     "test_end": "2010-11-26"
   },
   "test_used_for_model_selection": false,
-  "model_path": "D:\\H\u1ecdc M\u00e1y C\u01a1 B\u1ea3n\\project_24_hoc_may\\models\\kmeans_pipeline.joblib"
+  "feature_count": 24,
+  "model_path": "models/kmeans_pipeline.joblib"
 }

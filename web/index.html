@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Dashboard phân nhóm ngày theo hồ sơ tiêu thụ điện hộ gia đình bằng K-means." />
+    <title>Phân nhóm ngày tiêu thụ điện</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand route-link" href="/" data-route="intro" aria-label="Trang giới thiệu">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 36 36"><path d="M20 3 8 20h9l-2 13 13-19h-9l1-11Z" /></svg>
+        </span>
+        <span><strong>Điện năng 24h</strong><small>Phân nhóm ngày tiêu thụ điện</small></span>
+      </a>
+      <nav class="main-nav" aria-label="Điều hướng chính">
+        <a class="route-link" href="/" data-route="intro">Giới thiệu</a>
+        <a class="route-link" href="/analyze" data-route="analyze">Phân tích</a>
+        <a class="route-link" href="/calendar" data-route="calendar">Lịch cụm</a>
+        <a class="route-link" href="/dashboard" data-route="dashboard">Đánh giá</a>
+        <a class="route-link" href="/data-quality" data-route="quality">Dữ liệu</a>
+      </nav>
+      <div class="api-status" id="apiStatus" role="status" aria-live="polite">
+        <span class="status-dot"></span><span>Đang kiểm tra…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="page intro-page" data-page="intro">
+        <div class="intro-copy">
+          <p class="eyebrow">Project 24 · K-means</p>
+          <h1>Nhìn một ngày dùng điện qua 24 giờ</h1>
+          <p class="intro-lead">Hệ thống biến mỗi ngày thành 24 giá trị công suất trung bình theo giờ, sau đó phân nhóm các ngày có hồ sơ sử dụng điện tương tự.</p>
+          <div class="intro-actions">
+            <a class="button button-primary route-link" href="/analyze" data-route="analyze">Phân tích một ngày mới</a>
+            <a class="button button-ghost route-link" href="/calendar" data-route="calendar">Khám phá lịch cụm</a>
+          </div>
+          <p class="scope-note"><strong>Phạm vi:</strong> dữ liệu chỉ thuộc một hộ gia đình tại Pháp. Kết quả mang tính mô tả, không đại diện cho mọi hộ gia đình và không chứng minh nguyên nhân tiêu thụ điện.</p>
+        </div>
+        <div class="intro-visual" aria-label="Minh họa hồ sơ điện trong ngày">
+          <div class="energy-orbit"><span>24h</span><i></i><i></i><i></i></div>
+          <div class="intro-stats">
+            <article><span>Số ngày phân tích</span><strong id="introDays">1.420</strong></article>
+            <article><span>Số cụm được chọn</span><strong id="introK">2</strong></article>
+            <article><span>Đặc trưng mỗi ngày</span><strong>24 giờ</strong></article>
+          </div>
+        </div>
+        <div class="flow-strip" aria-label="Quy trình hệ thống">
+          <div><b>01</b><span>Dữ liệu theo phút</span></div>
+          <div><b>02</b><span>Tổng hợp 24 giờ</span></div>
+          <div><b>03</b><span>Pipeline K-means</span></div>
+          <div><b>04</b><span>Cụm và hồ sơ ngày</span></div>
+        </div>
+      </section>
+
+      <section class="page analyze-page" data-page="analyze" hidden>
+        <div class="page-title-row">
+          <div><p class="eyebrow">Thao tác chính</p><h1>Phân tích hồ sơ điện một ngày</h1><p>Nhập công suất trung bình theo giờ, đơn vị kW. Có thể bỏ trống tối đa 2 giờ.</p></div>
+          <div class="domain-badge"><span>Miền tham chiếu</span><strong id="domainText">Đang tải…</strong></div>
+        </div>
+        <div class="workspace">
+          <section class="input-panel" aria-labelledby="inputTitle">
+            <div class="section-heading">
+              <div><h2 id="inputTitle">Công suất theo từng giờ</h2><p>Bốn nhóm thời gian giúp nhập nhanh và hạn chế nhầm vị trí.</p></div>
+              <div class="actions secondary-actions">
+                <button class="button button-soft" id="sampleButton" type="button">Điền dữ liệu mẫu</button>
+                <button class="button button-ghost" id="clearButton" type="button">Xóa tất cả</button>
+              </div>
+            </div>
+            <form id="predictionForm" novalidate>
+              <div class="time-groups" id="hourInputs"></div>
+              <div class="form-footer">
+                <p class="form-message" id="formMessage" aria-live="polite"></p>
+                <button class="button button-primary" id="submitButton" type="submit"><span class="button-label">Phân tích ngày này</span><span class="button-loader" aria-hidden="true"></span></button>
+              </div>
+            </form>
+          </section>
+          <aside class="result-panel" aria-labelledby="resultTitle">
+            <div class="result-header"><div><p class="eyebrow">Kết quả K-means</p><h2 id="resultTitle">Kết quả phân tích</h2></div><span class="cluster-chip" id="clusterChip" hidden></span></div>
+            <div class="empty-state" id="emptyState"><div class="empty-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M8 50V31m12 19V19m12 31V27m12 23V11m12 39V23" /></svg></div><strong>Chưa có kết quả</strong><p>Dữ liệu mẫu đã sẵn sàng. Bấm “Phân tích ngày này” để xem cụm.</p></div>
+            <div class="result-content" id="resultContent" hidden>
+              <div class="verdict" id="verdict"><span class="verdict-icon" aria-hidden="true">✓</span><div><small>Nhận định</small><strong id="clusterLabel"></strong></div></div>
+              <div class="metrics"><article><span>Trung bình ngày</span><strong id="meanValue">—</strong><small>kW</small></article><article><span>Cao nhất</span><strong id="peakValue">—</strong><small>kW</small></article><article><span>Khoảng cách tâm</span><strong id="distanceValue">—</strong><small>đơn vị chuẩn hóa</small></article></div>
+              <div class="chart-card"><div class="chart-heading"><strong>Hồ sơ công suất 24 giờ</strong><div class="legend"><span><i class="legend-line actual"></i>Ngày nhập</span><span><i class="legend-line centroid"></i>Tâm cụm</span></div></div><svg id="profileChart" class="profile-chart" viewBox="0 0 700 300" role="img" aria-label="So sánh ngày nhập với tâm cụm"></svg></div>
+              <div class="warning-list" id="predictionWarnings" hidden></div>
+              <p class="result-note" id="resultNote"></p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page calendar-page" data-page="calendar" hidden>
+        <div class="page-title-row">
+          <div><p class="eyebrow">Khám phá theo thời gian</p><h1>Lịch phân bố các cụm</h1><p>Lọc theo mùa, chọn tháng rồi bấm một ngày để xem hồ sơ 24 giờ.</p></div>
+          <div class="calendar-controls"><label for="seasonFilter">Mùa<select id="seasonFilter"><option value="">Tất cả</option><option value="winter">Mùa đông</option><option value="spring">Mùa xuân</option><option value="summer">Mùa hè</option><option value="autumn">Mùa thu</option></select></label><label for="monthFilter">Tháng<select id="monthFilter"></select></label></div>
+        </div>
+        <div class="calendar-layout">
+          <section class="calendar-card">
+            <div class="calendar-legend"><span><i class="cluster-dot cluster-0"></i>Cụm 0 · mức cao</span><span><i class="cluster-dot cluster-1"></i>Cụm 1 · mức thấp</span><span><i class="anomaly-ring"></i>Ngày khác biệt</span></div>
+            <div class="weekday-row"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span></div>
+            <div class="calendar-grid" id="calendarGrid" aria-live="polite"></div>
+          </section>
+          <aside class="day-detail" id="dayDetail">
+            <div class="empty-state compact"><strong>Chọn một ngày</strong><p>Thông tin cụm và đồ thị 24 giờ sẽ xuất hiện tại đây.</p></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page dashboard-page" data-page="dashboard" hidden>
+        <div class="page-title-row"><div><p class="eyebrow">Đánh giá mô hình</p><h1>Dashboard K-means và model card</h1><p>Validation dùng để chọn cấu hình; test chỉ dùng cho kết luận cuối.</p></div><a class="button button-ghost" href="/docs" target="_blank" rel="noopener">Mở tài liệu API</a></div>
+        <div class="metric-row" id="evaluationMetrics"></div>
+        <div class="dashboard-grid">
+          <article class="dashboard-card wide"><div class="card-heading"><div><h2>Chọn số cụm K</h2><p>Silhouette trên validation, càng cao càng tốt.</p></div><div class="legend"><span><i class="legend-line actual"></i>Mức tuyệt đối</span><span><i class="legend-line centroid"></i>Hình dạng</span></div></div><svg id="kChart" class="dashboard-chart" viewBox="0 0 760 330" role="img" aria-label="Silhouette theo số cụm K"></svg></article>
+          <article class="dashboard-card"><h2>Kích thước cụm</h2><p>Số ngày được gán vào từng cụm.</p><div class="bar-chart" id="clusterBars"></div></article>
+          <article class="dashboard-card"><h2>Cụm theo mùa</h2><p>Tỷ lệ cụm trong từng mùa.</p><div class="season-bars" id="seasonBars"></div></article>
+          <article class="dashboard-card wide"><h2>Tâm cụm 24 giờ</h2><p>Đường đại diện cho hình dạng tiêu thụ của từng nhóm ngày.</p><svg id="centroidChart" class="dashboard-chart" viewBox="0 0 760 330" role="img" aria-label="Tâm cụm theo 24 giờ"></svg></article>
+          <article class="dashboard-card model-card"><h2>Model card</h2><dl id="modelFacts"></dl><h3>Giới hạn cần nhớ</h3><ul id="modelLimitations"></ul></article>
+        </div>
+      </section>
+
+      <section class="page quality-page" data-page="quality" hidden>
+        <div class="page-title-row"><div><p class="eyebrow">Hồ sơ dữ liệu</p><h1>Chất lượng và quy tắc làm sạch</h1><p>Các con số dưới đây được tạo tự động từ dữ liệu UCI thật.</p></div><span class="license-badge">UCI · CC BY 4.0</span></div>
+        <div class="metric-row" id="qualityMetrics"></div>
+        <div class="quality-grid">
+          <article class="dashboard-card"><h2>Quy tắc giữ ngày</h2><p>Ngày được giữ nếu thiếu không quá <strong id="missingThreshold">2 giờ</strong>. Các ô thiếu còn lại được impute bằng trung vị học từ train.</p><dl class="quality-facts" id="qualityFacts"></dl></article>
+          <article class="dashboard-card"><h2>Data dictionary</h2><div class="data-dictionary"><div><code>date</code><span>ID ngày quan sát</span></div><div><code>hour_00…hour_23</code><span>Feature · công suất trung bình kW</span></div><div><code>missing_hours</code><span>Metadata · số giờ thiếu</span></div><div><code>season / day_of_week</code><span>Metadata · chỉ dùng mô tả</span></div><div><code>sub_metering_*_kwh</code><span>Profiling · không dùng huấn luyện</span></div></div></article>
+          <article class="dashboard-card wide"><div class="card-heading"><div><h2>Các ngày đã loại</h2><p>Danh sách đầy đủ và lý do loại khỏi tập hồ sơ ngày.</p></div><span class="table-count" id="removedCount"></span></div><div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Số giờ thiếu</th><th>Lý do</th></tr></thead><tbody id="removedDaysBody"></tbody></table></div></article>
+        </div>
+      </section>
+    </main>
+
+    <footer><span>Project 24 · Học máy cơ bản</span><span>Mô hình mô tả, không suy luận nhân quả</span></footer>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

@@ -10,7 +10,7 @@ Phân nhóm các ngày sử dụng điện của hộ gia đình dựa trên h�
 
 - Chế độ tiền xử lý: `absolute`
 - Số cụm: `2`
-- Nguồn dữ liệu: `D:\Học Máy Cơ Bản\project_24_hoc_may\data\raw\household_power_consumption.txt`
+- Nguồn dữ liệu: `data\raw\household_power_consumption.txt`
 - Silhouette trên test: `0.1825`
 - Khoảng cách trung bình tới tâm cụm trên test: `3.6114`
 - Có dùng test để chọn mô hình: `False`

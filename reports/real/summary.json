@@ -1,0 +1,34 @@
+{
+  "data_source": "data\\raw\\household_power_consumption.txt",
+  "is_demo_data": false,
+  "selected_mode": "absolute",
+  "selected_k": 2,
+  "selection_validation_silhouette": 0.2625042553083504,
+  "selection_stability_ari": 1.0,
+  "seed_variability": {
+    "number_of_seeds": 10,
+    "validation_silhouette_std": 0.0,
+    "validation_silhouette_min": 0.2625042553083504,
+    "validation_silhouette_max": 0.2625042553083504,
+    "stability_ari_std": 0.0,
+    "stability_ari_min": 1.0,
+    "stability_ari_max": 1.0
+  },
+  "test_silhouette": 0.182507100217186,
+  "test_mean_distance_to_centroid": 3.6113989115790703,
+  "baseline_weekday_weekend_test_silhouette": 0.10313582056343033,
+  "baseline_global_mean_test_distance": 3.715607299496473,
+  "split": {
+    "train_days": 852,
+    "validation_days": 284,
+    "test_days": 284,
+    "train_end": "2009-04-19",
+    "validation_end": "2010-02-04",
+    "test_start": "2010-02-05",
+    "test_end": "2010-11-26"
+  },
+  "test_used_for_model_selection": false,
+  "feature_count": 24,
+  "artifact_variant": "real",
+  "model_path": "models\\real\\kmeans_pipeline.joblib"
+}

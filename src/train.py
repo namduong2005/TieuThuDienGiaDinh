@@ -10,6 +10,7 @@ from sklearn.metrics import adjusted_rand_score, silhouette_score
 from sklearn.pipeline import Pipeline
 
 from src.config import (
+    ARTIFACT_VARIANT,
     ASSIGNMENTS_PATH,
     CENTROIDS_PATH,
     DAILY_PROFILES_PATH,
@@ -17,6 +18,7 @@ from src.config import (
     HOUR_COLUMNS,
     MODEL_PATH,
     QUALITY_PATH,
+    SUB_METERING_COLUMNS,
     SUMMARY_PATH,
     ensure_directories,
 )
@@ -63,6 +65,22 @@ def cluster_stability(label_runs) -> float:
     return float(np.mean(scores))
 
 
+def cluster_stability_statistics(label_runs) -> dict[str, float]:
+    if len(label_runs) < 2:
+        scores = np.array([1.0])
+    else:
+        scores = np.asarray([
+            adjusted_rand_score(first, second)
+            for first, second in combinations(label_runs, 2)
+        ], dtype=float)
+    return {
+        "mean": float(scores.mean()),
+        "std": float(scores.std(ddof=0)),
+        "min": float(scores.min()),
+        "max": float(scores.max()),
+    }
+
+
 def mean_nearest_centroid_distance(model: KMeans, X) -> float:
     return float(model.transform(X).min(axis=1).mean())
 
@@ -71,6 +89,19 @@ def nanmean_or_nan(values) -> float:
     array = np.asarray(values, dtype=float)
     valid = array[~np.isnan(array)]
     return float(valid.mean()) if len(valid) else float("nan")
+
+
+def nan_statistics(values) -> dict[str, float]:
+    array = np.asarray(values, dtype=float)
+    valid = array[~np.isnan(array)]
+    if not len(valid):
+        return {key: float("nan") for key in ("mean", "std", "min", "max")}
+    return {
+        "mean": float(valid.mean()),
+        "std": float(valid.std(ddof=0)),
+        "min": float(valid.min()),
+        "max": float(valid.max()),
+    }
 
 
 def evaluate_experiments(
@@ -113,15 +144,20 @@ def evaluate_experiments(
                     mean_nearest_centroid_distance(model, X_validation)
                 )
 
+            train_stats = nan_statistics(train_silhouettes)
+            validation_stats = nan_statistics(validation_silhouettes)
+            inertia_stats = nan_statistics(train_inertias)
+            distance_stats = nan_statistics(validation_distances)
+            stability_stats = cluster_stability_statistics(label_runs)
             records.append(
                 {
                     "mode": mode,
                     "k": k,
-                    "train_silhouette_mean": nanmean_or_nan(train_silhouettes),
-                    "validation_silhouette_mean": nanmean_or_nan(validation_silhouettes),
-                    "train_inertia_per_day_mean": np.mean(train_inertias),
-                    "validation_distance_mean": np.mean(validation_distances),
-                    "stability_ari_mean": cluster_stability(label_runs),
+                    **{f"train_silhouette_{key}": value for key, value in train_stats.items()},
+                    **{f"validation_silhouette_{key}": value for key, value in validation_stats.items()},
+                    **{f"train_inertia_per_day_{key}": value for key, value in inertia_stats.items()},
+                    **{f"validation_distance_{key}": value for key, value in distance_stats.items()},
+                    **{f"stability_ari_{key}": value for key, value in stability_stats.items()},
                     "minimum_cluster_fraction_mean": np.mean(minimum_cluster_fractions),
                     "number_of_seeds": len(seeds),
                 }
@@ -237,6 +273,9 @@ def main():
         "month",
         "season",
     ]
+    assignment_columns.extend(
+        column for column in SUB_METERING_COLUMNS if column in all_assignments
+    )
     if "demo_true_pattern" in all_assignments:
         assignment_columns.append("demo_true_pattern")
     all_assignments[assignment_columns].to_csv(ASSIGNMENTS_PATH, index=False)
@@ -270,6 +309,15 @@ def main():
             selected["validation_silhouette_mean"]
         ),
         "selection_stability_ari": float(selected["stability_ari_mean"]),
+        "seed_variability": {
+            "number_of_seeds": int(selected["number_of_seeds"]),
+            "validation_silhouette_std": float(selected["validation_silhouette_std"]),
+            "validation_silhouette_min": float(selected["validation_silhouette_min"]),
+            "validation_silhouette_max": float(selected["validation_silhouette_max"]),
+            "stability_ari_std": float(selected["stability_ari_std"]),
+            "stability_ari_min": float(selected["stability_ari_min"]),
+            "stability_ari_max": float(selected["stability_ari_max"]),
+        },
         "test_silhouette": test_silhouette,
         "test_mean_distance_to_centroid": test_distance,
         "baseline_weekday_weekend_test_silhouette": baseline_weekday_silhouette,
@@ -284,7 +332,9 @@ def main():
             "test_end": test_frame["date"].max().strftime("%Y-%m-%d"),
         },
         "test_used_for_model_selection": False,
-        "model_path": str(MODEL_PATH),
+        "feature_count": len(HOUR_COLUMNS),
+        "artifact_variant": ARTIFACT_VARIANT,
+        "model_path": str(MODEL_PATH.relative_to(MODEL_PATH.parents[2])),
     }
     SUMMARY_PATH.write_text(json.dumps(summary, indent=2), encoding="utf-8")
 

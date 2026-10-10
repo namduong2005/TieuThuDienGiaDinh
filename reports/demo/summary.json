@@ -1,0 +1,34 @@
+{
+  "data_source": "synthetic_demo",
+  "is_demo_data": true,
+  "selected_mode": "absolute",
+  "selected_k": 2,
+  "selection_validation_silhouette": 0.5741152010007234,
+  "selection_stability_ari": 1.0,
+  "seed_variability": {
+    "number_of_seeds": 3,
+    "validation_silhouette_std": 0.0,
+    "validation_silhouette_min": 0.5741152010007234,
+    "validation_silhouette_max": 0.5741152010007234,
+    "stability_ari_std": 0.0,
+    "stability_ari_min": 1.0,
+    "stability_ari_max": 1.0
+  },
+  "test_silhouette": 0.5620833364392762,
+  "test_mean_distance_to_centroid": 3.1641331266210635,
+  "baseline_weekday_weekend_test_silhouette": 0.39422704215233456,
+  "baseline_global_mean_test_distance": 4.241979720525326,
+  "split": {
+    "train_days": 144,
+    "validation_days": 48,
+    "test_days": 48,
+    "train_end": "2009-05-24",
+    "validation_end": "2009-07-11",
+    "test_start": "2009-07-12",
+    "test_end": "2009-08-28"
+  },
+  "test_used_for_model_selection": false,
+  "feature_count": 24,
+  "artifact_variant": "demo",
+  "model_path": "models\\demo\\kmeans_pipeline.joblib"
+}

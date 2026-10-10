@@ -1,0 +1,8 @@
+{
+  "source_file": "synthetic_demo",
+  "total_raw_rows": 5760,
+  "duplicate_timestamp_rows": 0,
+  "negative_power_rows": 0,
+  "kept_days": 240,
+  "note": "Chi dung de kiem tra code, khong dung lam ket qua bao cao."
+}

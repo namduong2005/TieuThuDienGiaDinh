@@ -1,0 +1,26 @@
+# Data dictionary
+
+Bảng biến đầy đủ dùng trong dự án.
+
+| Biến | Giai đoạn | Mô tả | Đơn vị/miền | Vai trò | Thiếu/quy tắc |
+|---|---|---|---|---|---|
+| Date | raw | Ngày đo | DD/MM/YYYY | định danh thời gian | Không; dòng ngày lỗi bị loại |
+| Time | raw | Thời điểm đo | HH:MM:SS | định danh thời gian | Không; dòng thời gian lỗi bị loại |
+| Global_active_power | raw | Công suất tác dụng trung bình phút | kW | nguồn tạo 24 feature | ? được coi là thiếu |
+| Global_reactive_power | raw | Công suất phản kháng | kW | không dùng | Không nạp vào pipeline |
+| Voltage | raw | Điện áp trung bình phút | V | không dùng | Không nạp vào pipeline |
+| Global_intensity | raw | Cường độ dòng điện | A | không dùng | Không nạp vào pipeline |
+| Sub_metering_1 | raw | Điện năng khu bếp | Wh/phút | mô tả sau phân cụm | Cộng theo ngày, đổi sang kWh |
+| Sub_metering_2 | raw | Điện năng phòng giặt | Wh/phút | mô tả sau phân cụm | Cộng theo ngày, đổi sang kWh |
+| Sub_metering_3 | raw | Điện năng bình nóng lạnh/điều hòa | Wh/phút | mô tả sau phân cụm | Cộng theo ngày, đổi sang kWh |
+| date | derived | Ngày quan sát | YYYY-MM-DD | ID | Một dòng cho mỗi ngày |
+| hour_00…hour_23 | derived | Công suất trung bình từng giờ | kW | 24 feature học máy | Ngày thiếu >2 giờ bị loại; còn lại impute trung vị train |
+| missing_hours | derived | Số giờ thiếu trong ngày | giờ | metadata | Miền 0–2 đối với ngày được giữ |
+| day_of_week | derived | Ngày trong tuần | category | phân tích/baseline | Không dùng huấn luyện K-means |
+| is_weekend | derived | Cờ cuối tuần | 0/1 | baseline | Không dùng huấn luyện K-means |
+| month | derived | Tháng | 1–12 | phân tích | Không dùng huấn luyện K-means |
+| season | derived | Mùa khí tượng | winter/spring/summer/autumn | phân tích | Suy ra từ tháng |
+| split | model output | Tập dữ liệu | train/validation/test | kiểm soát đánh giá | Chia theo thời gian 60/20/20 |
+| cluster | model output | Nhãn cụm K-means | số nguyên | đầu ra | Mã định danh, không phải thứ hạng |
+| distance_to_centroid | model output | Khoảng cách tới tâm cụm | không thứ nguyên | phân tích lỗi | Tính trong không gian đã tiền xử lý |
+| is_anomaly | model output | Ngày xa tâm cụm | boolean | cảnh báo | Ngưỡng percentile 95 từ train+validation |

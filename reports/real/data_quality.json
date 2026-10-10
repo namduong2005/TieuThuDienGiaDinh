@@ -1,0 +1,22 @@
+{
+  "source_file": "data\\raw\\household_power_consumption.txt",
+  "total_raw_rows": 2075259,
+  "missing_power_rows": 25979,
+  "invalid_datetime_rows": 0,
+  "duplicate_timestamp_rows": 0,
+  "negative_power_rows": 0,
+  "raw_power_min_kw": 0.076,
+  "raw_power_max_kw": 11.122,
+  "sub_metering_missing_rows": {
+    "Sub_metering_1": 25979,
+    "Sub_metering_2": 25979,
+    "Sub_metering_3": 25979
+  },
+  "total_calendar_days": 1442,
+  "kept_days": 1420,
+  "removed_days": 22,
+  "max_missing_hours_allowed": 2,
+  "daily_mean_iqr_lower_kw": 0.06683854166666692,
+  "daily_mean_iqr_upper_kw": 2.0703579861111105,
+  "daily_iqr_outlier_days": 32
+}

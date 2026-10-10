@@ -33,6 +33,12 @@ def save_metric_plot(experiments: pd.DataFrame) -> None:
         group = group.sort_values("k")
         label = MODE_LABELS.get(mode, mode)
         axes[0].plot(group["k"], group["validation_silhouette_mean"], marker="o", label=label)
+        axes[0].fill_between(
+            group["k"],
+            group["validation_silhouette_mean"] - group["validation_silhouette_std"],
+            group["validation_silhouette_mean"] + group["validation_silhouette_std"],
+            alpha=0.15,
+        )
         axes[1].plot(group["k"], group["train_inertia_per_day_mean"], marker="o", label=label)
         axes[2].plot(group["k"], group["stability_ari_mean"], marker="o", label=label)
 
@@ -150,6 +156,13 @@ Phân nhóm các ngày sử dụng điện của hộ gia đình dựa trên h�
 
 {counts_text}
 
+## Độ biến thiên qua seed
+
+- Số seed dùng khi chọn cấu hình: `{summary.get('seed_variability', {}).get('number_of_seeds', 'không có')}`
+- Silhouette validation: trung bình `{summary['selection_validation_silhouette']:.4f}`, độ lệch chuẩn `{summary.get('seed_variability', {}).get('validation_silhouette_std', float('nan')):.4f}`.
+- Khoảng silhouette validation qua seed: `{summary.get('seed_variability', {}).get('validation_silhouette_min', float('nan')):.4f}` đến `{summary.get('seed_variability', {}).get('validation_silhouette_max', float('nan')):.4f}`.
+- ARI giữa các seed: trung bình `{summary['selection_stability_ari']:.4f}`, độ lệch chuẩn `{summary.get('seed_variability', {}).get('stability_ari_std', float('nan')):.4f}`.
+
 ## Giới hạn
 
 - Dữ liệu chỉ từ một hộ tại Pháp, không được khái quát cho toàn bộ dân số.
@@ -188,6 +201,7 @@ def main():
         f"K được chọn: {summary['selected_k']}",
         f"Silhouette validation: {summary['selection_validation_silhouette']:.4f}",
         f"Độ ổn định ARI: {summary['selection_stability_ari']:.4f}",
+        f"Độ lệch chuẩn silhouette qua seed: {summary.get('seed_variability', {}).get('validation_silhouette_std', float('nan')):.4f}",
         f"Silhouette test: {summary['test_silhouette']:.4f}",
         f"Khoảng cách trung bình trên test: {summary['test_mean_distance_to_centroid']:.4f}",
         f"Silhouette baseline ngày thường/cuối tuần: {summary['baseline_weekday_weekend_test_silhouette']:.4f}",

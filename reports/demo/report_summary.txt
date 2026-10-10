@@ -1,0 +1,11 @@
+PROJECT 24 - TÓM TẮT KẾT QUẢ HỌC MÁY
+Nguồn dữ liệu: synthetic_demo
+Dữ liệu demo: True
+Tiền xử lý được chọn: absolute
+K được chọn: 2
+Silhouette validation: 0.5741
+Độ ổn định ARI: 1.0000
+Độ lệch chuẩn silhouette qua seed: 0.0000
+Silhouette test: 0.5621
+Khoảng cách trung bình trên test: 3.1641
+Silhouette baseline ngày thường/cuối tuần: 0.3942
