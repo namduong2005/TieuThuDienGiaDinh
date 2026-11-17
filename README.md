@@ -1,3 +1,4 @@
+# Học Máy Cơ Bản
 # Phân nhóm ngày theo hồ sơ tiêu thụ điện
 
 Dự án xử lý dữ liệu Individual Household Electric Power Consumption, biến mỗi ngày thành vector 24 giá trị công suất trung bình theo giờ, rồi phân cụm bằng K-means.
